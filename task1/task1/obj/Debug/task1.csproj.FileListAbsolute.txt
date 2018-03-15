@@ -1,7 +1,0 @@
-C:\Users\Даша\Documents\GitHub\start_.net\task1\task1\bin\Debug\task1.exe.config
-C:\Users\Даша\Documents\GitHub\start_.net\task1\task1\bin\Debug\task1.exe
-C:\Users\Даша\Documents\GitHub\start_.net\task1\task1\bin\Debug\task1.pdb
-C:\Users\Даша\Documents\GitHub\start_.net\task1\task1\obj\Debug\task1.csprojResolveAssemblyReference.cache
-C:\Users\Даша\Documents\GitHub\start_.net\task1\task1\obj\Debug\task1.csproj.CoreCompileInputs.cache
-C:\Users\Даша\Documents\GitHub\start_.net\task1\task1\obj\Debug\task1.exe
-C:\Users\Даша\Documents\GitHub\start_.net\task1\task1\obj\Debug\task1.pdb
