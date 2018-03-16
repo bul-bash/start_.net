@@ -11,48 +11,53 @@ namespace task2
         static void Main(string[] args)
         {
             Console.WriteLine(Math.Log(2));
-            Console.WriteLine( LN2());
+            Console.WriteLine( LN2_1());
         }
 
         static decimal E()
         {
-            decimal e = Decimal.One;
-            decimal f = Decimal.One;
+            decimal result = Decimal.One;
+            decimal factorial = Decimal.One;
             for (int i = 1; i < 20; i++)
             {
-                f *= i;
-                e += Decimal.One / f;
+                factorial *= i;
+                result += Decimal.One / factorial;
             }
-
-            return e;
+            return result;
         }
 
         static decimal PI()
         {
-            decimal pi = 3;
+            decimal result = 3;
             decimal coef = 4;
             for (long i = 2; i < 100000; i+=4)
             {
-                    pi += coef / (i * (i + 1) * (i + 2));
-                    pi -= coef / ((i+2) * (i + 3) * (i + 4));
+                    result += coef / (i * (i + 1) * (i + 2));
+                    result -= coef / ((i+2) * (i + 3) * (i + 4));
             }
-        return pi;
+        return result;
         }
 
-        static decimal LN2()
+        /// <summary>
+        /// Логарифм 2 с помощью ряда Тейлора
+        /// </summary>
+        static decimal LN2_1()
         {
-            decimal res = 0;
-
-            double sign = 1.0;
-
-            for (long i = 1; i < 1000000000; i++)
+            decimal result = 0;
+            for (long i = 1; i < 1000000; i++)
             {
-                
-                res += (decimal)(sign / i);
-                sign *= -1;
+                result += (decimal) (1 / (i*Math.Pow(2,i)));
             }
-
-            return res;
+            return result;
+        }
+        static decimal SQRT2_1()
+        {
+            decimal result = 0;
+            for (long i = 1; i < 1000000; i++)
+            {
+                result += (decimal)(1 / (i * Math.Pow(2, i)));
+            }
+            return result;
         }
     }
 }
