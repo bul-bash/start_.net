@@ -11,7 +11,10 @@ namespace task3
         static void Main(string[] args)
         {
            // TaskA.Start(args); //вроде протестировал
-            TaskA.ConsoleInput();
+            TaskA.Start(args);
+            Console.ReadKey();
+
         }
+
     }
 }

@@ -9,11 +9,18 @@ namespace task1
 {
     public sealed class CubicEquation
     {
+
+        private double _a;
+        private double _b;
+        private double _c;
+        private double _d;
+
         public CubicEquation(double a, double b, double c, double d)
         {
             try
             {
-                if (a == 0) throw new Exception("коэффициент при х^3 не может быть равен нулю!");
+                if (a == 0)
+                    throw new Exception("коэффициент при х^3 не может быть равен нулю!");
             }
             catch (Exception exception)
             {
@@ -32,22 +39,8 @@ namespace task1
             var p = -Math.Pow(_b, 2) / 3 + _c;
             var q = (2 * Math.Pow(_b / 3.0, 3) - _b * _c / 3.0 + _d);
             var Q = (Math.Pow(p / 3, 3)) + Math.Pow(q / 2, 2);
-            //if (Q<0)
-            //{
-            //    var t = Complex.Acos(q / Complex.Sqrt(Complex.Pow(p, 3))) / 3;
-            //    x1 = -2 * Complex.Sqrt(p) * Complex.Cos(t) - _b / 3;
-            //    x2 = -2 * Complex.Sqrt(p) * Complex.Cos(t + (2 * Math.PI / 3)) - _b / 3;
-            //    x3 = -2 * Complex.Sqrt(p) * Complex.Cos(t - (2 * Math.PI / 3)) - _b / 3;
-
-
-
-            //    return;
-            //}
-            //else
-            //{
             var cardanoA = Complex.Pow((-q / 2) + Complex.Sqrt(Q), (1.0 / 3.0));
             var cardanoB = (cardanoA == 0) ? 0.0 : -p / cardanoA/3;
-          //  var cardanoB = Complex.Pow((-q / 2) - Complex.Sqrt(Q), (1.0 / 3.0));
 
             x1 = (cardanoA + cardanoB) - _b / 3;
             x2 = -(cardanoA + cardanoB) / 2 - (_b / 3) +
@@ -62,7 +55,6 @@ namespace task1
             }
 
             return;
-        //}
 
     }
 
@@ -90,37 +82,9 @@ namespace task1
             x1 = y1    - _b/3;
             x2 = y2    - _b/3;
             x3 = y3    - _b/3;
-
+            
         }
-
-        #region properties
-        public double A
-        {
-            get => _a;
-            set => _a = value;
-        }
-
-        public double B
-        {
-            get => _b;
-            set => _b = value;
-        }
-
-        public double C
-        {
-            get => _c;
-            set => _c = value;
-        }
-
-        public double D
-        {
-            get => _d;
-            set => _d = value;
-        }
-
-        #endregion
-
-        private double _a, _b, _c, _d;
+        
 
 
 

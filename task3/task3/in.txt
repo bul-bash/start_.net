@@ -1,4 +1,4 @@
-п»їusing System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -12,18 +12,18 @@ namespace task3
     {
 
 
-        private static void CountAverage(string inputString)
+        public static void CountAverage(string inputString)
         {
             if (inputString != null)
             {
-                double sum = 0;
-                double number;
+                float sum = 0;
+                int number;
                 int count = 0;
                 var symbols = inputString.Split();
                 foreach (var symbol in symbols)
                 {
 
-                    if (Double.TryParse(symbol, out number))
+                    if (Int32.TryParse(symbol, out number))
                     {
                         sum += number;
                         count++;
@@ -32,30 +32,30 @@ namespace task3
 
                 if (count > 0)
                 {
-                    Console.WriteLine($"РЎСЂРµРґРЅРµРµ РђСЂРёС„РјРµС‚РёС‡РµСЃРєРѕРµ РІРІРµРґРµРЅРЅС‹С… С‡РёСЃРµР»: {sum / count}");
+                    Console.WriteLine($"Среднее Арифметическое введенных чисел: {sum / count}");
                 }
                 else
                 {
-                    Console.WriteLine($"Р’Р« РЅРµ РІРІРµР»Рё РЅРё РѕРґРЅРѕРіРѕ Р°РґРµРєРІР°С‚РЅРѕРіРѕ С‡РёСЃР»Р°!=(");
+                    Console.WriteLine($"ВЫ не ввели ни одного числа!=(");
                 }
             }
         }
 
-        private static void FileInput(string fileName)
+        public static void FileInput(string fileName)
         {
             using (var streamReader = new StreamReader(fileName))
             {
                 string inputString = streamReader.ReadToEnd();
-                Console.WriteLine("РЎС‡РёС‚Р°РЅР° РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ СЃРёРјРІРѕР»РѕРІ, СЂР°Р·РґРµР»РµРЅРЅС‹С… РїСЂРѕР±РµР»Р°РјРё:");
+                Console.WriteLine("Считана последовательность символов, разделенных пробелами:");
                 Console.WriteLine(inputString);
                 CountAverage(inputString);
 
             }
 
         }
-        private static void ConsoleInput()
+        public static void ConsoleInput()
         {
-            Console.WriteLine("Р’РІРµРґРёС‚Рµ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ СЃРёРјРІРѕР»РѕРІ, СЂР°Р·РґРµР»РµРЅРЅС‹С… РїСЂРѕР±РµР»Р°РјРё.");
+            Console.WriteLine("Введите последовательность символов, разделенных пробелами.");
             string inputString = Console.ReadLine();
             CountAverage(inputString);
 
@@ -81,13 +81,13 @@ namespace task3
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine($"РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ С„Р°Р№Р»Р° '{args[1]}' \nРџСЂРѕРІРµСЂСЊС‚Рµ РїСѓС‚СЊ Рё РёРјСЏ С„Р°Р№Р»Р°");
+                    Console.WriteLine($"Ошибка открытия файла '{args[1]}' \nПроверьте путь и имя файла");
                     return;
                 }
             }
             else
             {
-                    Console.WriteLine($"РќРµ СѓРґР°Р»РѕСЃСЊ СЂР°СЃРїРѕР·РЅР°С‚СЊ Р°СЂРіСѓРјРµРЅС‚С‹ РєРѕРјРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё! \nРџСЂРѕРІРµСЂСЊС‚Рµ РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ РІРІРѕРґР°!");
+                    Console.WriteLine($"Не удалось распознать аргументы коммандной строки! \nПроверьте корректность ввода!");
             }
         }
 
