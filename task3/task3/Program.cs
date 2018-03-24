@@ -11,7 +11,8 @@ namespace task3
         static void Main(string[] args)
         {
            // TaskA.Start(args); //вроде протестировал
-            TaskA.Start(args);
+           // TaskB.Start(args); //вроде протестировал
+            TaskC.Start(args);
             Console.ReadKey();
 
         }
