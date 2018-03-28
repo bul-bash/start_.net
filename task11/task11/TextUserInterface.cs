@@ -39,7 +39,7 @@ namespace task11
             }
         }
 
-        static Action[] menuAction = new Action[]
+        static readonly Action[] menuAction = new Action[]
         {
             Info,
             SearchFilesByName,
