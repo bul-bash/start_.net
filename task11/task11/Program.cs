@@ -19,12 +19,8 @@ namespace task11
     class Program
     {
         static void Main(string[] args)
-        {
-            foreach (var file in WorkWithFiles.SearchFilesByRegex(new Regex(@"\D"), "C:\\DW\\"))
-            {
-                Console.WriteLine(file);
-            }
-
+        { 
+            TextUserInterface.Start();
             
         }
     }
