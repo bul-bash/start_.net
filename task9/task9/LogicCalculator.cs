@@ -11,7 +11,7 @@ namespace task9
     {
 
         private static List<string> commands = new List<string>
-            {"EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT"};
+            {"(", "EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT"};
 
         static byte GetPriorytyOperation(string operation)
         {
@@ -23,7 +23,7 @@ namespace task9
 
         static void ParseExpression(string expression)
         {
-          //  stackArguments.
+            var lexeme = expression.Split();
         }
 
         public static List<byte> Calculate(string input)
