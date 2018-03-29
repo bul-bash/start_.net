@@ -43,6 +43,22 @@ namespace task10
                     return;
                 }
             }
+            else if (args.Length == 3)
+            {
+                try
+                {
+                    TextProcessor.ChangeWords(args[0], args[1], args[2]);
+
+                    Process.Start(fileName: args[1]);
+
+                    Console.WriteLine("Успех!");
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine("что-то пошло не так =(");
+                    return;
+                }
+            }
             else 
             {
                 Console.WriteLine($"Не удалось распознать аргументы коммандной строки! \nПроверьте корректность ввода!");
