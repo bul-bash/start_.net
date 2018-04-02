@@ -10,20 +10,62 @@ namespace task9
     public static class LogicCalculator
     {
 
-        private static List<string> commands = new List<string>
-            {"(", "EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT"};
+        public static List<string> commands = new List<string>
+            {")", "EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT","("};
 
         static byte GetPriorytyOperation(string operation)
         {
             return (byte) commands.IndexOf(operation);
         }
 
-        static Stack<string> stackOperations = new Stack<string>();
-        static Stack<BoolBash> stackArguments = new Stack<BoolBash>();
+        static Stack<string> stackOperations;
+        static Stack<BoolBash> stackArguments;
 
-        static void ParseExpression(string expression)
+        //A AND (B OR C)
+        //A * (B + C) 
+        //(A XOR B AND C)
+        public static BoolBash ParseExpression(string expression, List<string> commands, bool printInterim=true)
         {
-            var lexeme = expression.Split();
+            var separator = new char[] { ' ' };
+
+            var stackOperations = new Stack<string>();
+            stackOperations.Push("(");
+            var stackArguments = new Stack<BoolBash>();
+            string expressionEx = expression.Replace("(", " ( ").Replace(")", " ) ");
+            var lexemes = expressionEx.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var lexeme in lexemes)
+            {
+                if (commands.Contains(lexeme))
+                {
+                    if (stackOperations.Count!=0)
+                    {
+                        while (GetPriorytyOperation(lexeme) < GetPriorytyOperation(stackOperations.Peek()) && stackOperations.Peek() != "(")
+                        {
+                            BoolBash argument2 = stackArguments.Pop();
+                            BoolBash argument1 = stackArguments.Pop();
+                            BoolBash tmp = BoolBash.Operation(argument1, argument2,
+                                stackOperations.Pop());
+                            stackArguments.Push(tmp);
+                            if (printInterim)
+                            {
+                                Console.WriteLine(tmp);
+                            }
+                        }
+
+                        if (lexeme == ")") stackOperations.Pop();
+                        else stackOperations.Push(lexeme);
+                    }
+                    else
+                    stackOperations.Push(lexeme);
+                }
+                else 
+                {
+                    stackArguments.Push(new BoolBash(lexeme));
+                }
+
+            }
+
+            return stackArguments.Pop();
         }
 
         public static List<byte> Calculate(string input)

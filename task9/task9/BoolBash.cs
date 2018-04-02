@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace task9
 {
-    class BoolBash
+    public class BoolBash
     {
         private string _name;
         private List<byte> _values; //по умолчанию - 01 //потом хранить столбец из таблицы истинности
@@ -15,13 +15,15 @@ namespace task9
 
         public BoolBash(string name)
         {
-            _name = name;
-            _values = new List<byte>() {0, 1};
+            _name =name;
+            if (name == "1") _values = new List<byte>() {1};
+            else if (name == "0") _values = new List<byte>() {0};
+            else _values = new List<byte>() {0, 1};
         }
 
         public BoolBash(string name, List<byte> values)
         {
-            _name = name;
+            _name = "(" + name + ")";
             _values = values;
         }
     //    {"EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT"};
@@ -118,7 +120,7 @@ namespace task9
                 result.Append(bit);
             }
 
-            return result.ToString();
+            return _name+" "+result.ToString();
         }
 
 

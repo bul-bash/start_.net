@@ -11,13 +11,15 @@ namespace task9
     {
         static void Main(string[] args)
         {
-            BoolBash A = new BoolBash("A");
-            BoolBash B = new BoolBash("B");
-            BoolBash C = BoolBash.Operation(A, B, "XOR");
-            Console.WriteLine(C);
+            //BoolBash A = new BoolBash("A");
+            //BoolBash B = new BoolBash("B");
+            //BoolBash C = BoolBash.Operation(A, B, "XOR");
+            //Console.WriteLine(C);
 
-            A = BoolBash.Operation(C,B,"EQV");
-            Console.WriteLine(A);
+            //A = BoolBash.Operation(C,B,"EQV");
+            //Console.WriteLine(A);
+            
+            Console.WriteLine(LogicCalculator.ParseExpression("1 EQV 0)", LogicCalculator.commands));
         }
     }
 }
