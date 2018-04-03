@@ -82,9 +82,9 @@ namespace task9
             return (byte)(_one ^  rightBit & leftBit);
         }
 
-        public static byte NOT(byte leftBit, byte rightBit) //rightBit - not used
+        public static byte NOT(byte leftBit, byte rightBit) //leftBit - not used
         {
-            return (byte)(_one ^ leftBit);
+            return (byte)(_one ^ rightBit);
         }
 
 #endregion
@@ -92,23 +92,26 @@ namespace task9
         public static BoolBash Operation(BoolBash left, BoolBash right, string operation) 
         {
             List<byte> resultBytes = new List<byte>();
-            foreach (var leftBit in left._values)
+            if (operation != "NOT")
             {
-                if (operation != "NOT")
-                {
-                    foreach (var rightBit in right._values)
-                    {
-                        resultBytes.Add(operationsDictionary[operation].Invoke(leftBit, rightBit));
-                    }
-                }
-                else
-                {
-                    resultBytes.Add(operationsDictionary[operation].Invoke(leftBit, 0));
+                foreach (var leftBit in left?._values)
+            {
 
+                foreach (var rightBit in right._values)
+                {
+                    resultBytes.Add(operationsDictionary[operation].Invoke(leftBit, rightBit));
+                }
+            }
+            }
+            else
+            {
+                foreach (var rightBit in right._values)
+                {
+                    resultBytes.Add(operationsDictionary[operation].Invoke(0, rightBit));
                 }
             }
 
-            return new BoolBash($"{left._name} {operation} {right._name}", resultBytes);
+            return new BoolBash($"{left?._name} {operation} {right._name}", resultBytes);
         }
         
 
@@ -123,7 +126,10 @@ namespace task9
             return _name+" "+result.ToString();
         }
 
-
+        public static void Logged(BoolBash boolBash)
+        {
+            Console.WriteLine(boolBash.ToString());
+        }
 
     }
 }

@@ -24,7 +24,7 @@ namespace task9
         //A AND (B OR C)
         //A * (B + C) 
         //(A XOR B AND C)
-        public static BoolBash ParseExpression(string expression, List<string> commands, bool printInterim=true)
+        public static BoolBash ParseExpression(string expression, List<string> commands, Action<BoolBash> logged=null)
         {
             var separator = new char[] { ' ' };
 
@@ -32,6 +32,8 @@ namespace task9
             stackOperations.Push("(");
             var stackArguments = new Stack<BoolBash>();
             string expressionEx = expression.Replace("(", " ( ").Replace(")", " ) ");
+            BoolBash argument1;
+            BoolBash argument2;
             var lexemes = expressionEx.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             foreach (var lexeme in lexemes)
             {
@@ -41,15 +43,13 @@ namespace task9
                     {
                         while (GetPriorytyOperation(lexeme) < GetPriorytyOperation(stackOperations.Peek()) && stackOperations.Peek() != "(")
                         {
-                            BoolBash argument2 = stackArguments.Pop();
-                            BoolBash argument1 = stackArguments.Pop();
+                            argument2 = stackArguments?.Pop() ?? null;
+                            argument1 = stackArguments.Count!=0 ? stackArguments?.Pop() : null;
                             BoolBash tmp = BoolBash.Operation(argument1, argument2,
                                 stackOperations.Pop());
                             stackArguments.Push(tmp);
-                            if (printInterim)
-                            {
-                                Console.WriteLine(tmp);
-                            }
+
+                            logged?.Invoke(tmp);
                         }
 
                         if (lexeme == ")") stackOperations.Pop();

@@ -19,7 +19,7 @@ namespace task9
             //A = BoolBash.Operation(C,B,"EQV");
             //Console.WriteLine(A);
             
-            Console.WriteLine(LogicCalculator.ParseExpression("1 EQV 0)", LogicCalculator.commands));
+            Console.WriteLine(LogicCalculator.ParseExpression("(A) AND A)", LogicCalculator.commands,null));
         }
     }
 }
