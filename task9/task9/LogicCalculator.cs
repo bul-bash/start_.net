@@ -29,12 +29,12 @@ namespace task9
             var separator = new char[] { ' ' };
 
             var stackOperations = new Stack<string>();
-            stackOperations.Push("(");
+          
             var stackArguments = new Stack<BoolBash>();
-            string expressionEx = expression.Replace("(", " ( ").Replace(")", " ) ");
+            
             BoolBash argument1;
             BoolBash argument2;
-            var lexemes = expressionEx.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+            var lexemes = expression.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             foreach (var lexeme in lexemes)
             {
                 if (commands.Contains(lexeme))

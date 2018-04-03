@@ -18,8 +18,8 @@ namespace task9
 
             //A = BoolBash.Operation(C,B,"EQV");
             //Console.WriteLine(A);
-            
-            Console.WriteLine(LogicCalculator.ParseExpression("(A) AND A)", LogicCalculator.commands,null));
+            var expr = BoolBash.ReplaceNotByXor(BoolBash.FormatExpression("Not A and not B)"));
+            Console.WriteLine(LogicCalculator.ParseExpression(expr, LogicCalculator.commands,BoolBash.Logged));
         }
     }
 }
