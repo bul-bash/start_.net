@@ -32,7 +32,8 @@ namespace task9
             var lexemes = exp.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             foreach (var lexeme in lexemes)
             {
-                if (!operationsDictionary.ContainsKey(lexeme)) argSet.Add(lexeme);
+                if ((!operationsDictionary.ContainsKey(lexeme))&&(lexeme!="1") &&(lexeme!="0" ))
+                    argSet.Add(lexeme);
             }
 
             _countBool = argSet.Count;
@@ -45,19 +46,6 @@ namespace task9
             int countRow = (int) Math.Pow(2, _countBool);
             _countRow= (int)Math.Pow(2, _countBool);
             _name = " " + name + " ";
-            if (!_usedVariables.ContainsKey(_name))
-            {
-                _usedVariables.Add(_name, this);
-                _position = _usedVariables.Count;
-            }
-            else
-            {
-                _position = _usedVariables[_name]._position;
-            }
-            int a = (int)Math.Pow(2, _position-1);
-            int b = (int)Math.Pow(2, _countBool) / 2 / a; 
-
-
             if (name == "1")
                 for (int i = 0; i < _countRow; i++)
                 {
@@ -68,43 +56,45 @@ namespace task9
                 {
                     _values.Add(0);
                 }
-
-            for (int i = 0; i < a; i++)
+            else
             {
-                for (int j = 0; j < b; j++)
-                {
-                _values.Add(0);
 
+
+                if (!_usedVariables.ContainsKey(_name))
+                {
+                    _usedVariables.Add(_name, this);
+                    _position = _usedVariables.Count;
                 }
-                for (int j = 0; j < b; j++)
+                else
                 {
-                    _values.Add(1);
+                    _position = _usedVariables[_name]._position;
+                }
 
+                int a = (int) Math.Pow(2, _position - 1);
+                int b = (int) Math.Pow(2, _countBool) / 2 / a;
+
+
+
+
+                for (int i = 0; i < a; i++)
+                {
+                    for (int j = 0; j < b; j++)
+                    {
+                        _values.Add(0);
+
+                    }
+
+                    for (int j = 0; j < b; j++)
+                    {
+                        _values.Add(1);
+
+                    }
                 }
             }
 
-
         }
 
-        //public BoolBash(string name)
-        //{
-        //    if (_usedVariables.ContainsKey(name))
-        //    {
-        //        //   this = _usedVariables[name];
-        //    }
-
-        //    _name =" " +name+" ";
-        //    if (name == "1")
-        //        _values = new List<byte>() {1};
-        //    else if (name == "0")
-        //        _values = new List<byte>() {0};
-
-        //    else _values = new List<byte>() {0, 1};
-
-        //    _length =(int) Math.Log(_values.Count, 2);
-        //    if (!_usedVariables.ContainsKey(_name))_usedVariables.Add(_name, this);
-        //}
-
+       
         public BoolBash(string name, List<byte> values)
         {
             _name = "(" + name + ")";
@@ -112,7 +102,6 @@ namespace task9
             _length = (int)Math.Log(_values.Count, 2);
 
         }
-        //    {"EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT"};
 
         static Dictionary<string, Func<byte, byte, byte>> operationsDictionary =
             new Dictionary<string, Func<byte, byte, byte>>
@@ -230,6 +219,26 @@ namespace task9
         public static bool operator !=(BoolBash left, BoolBash right)
         {
             return !(left == right);
+        }
+
+        public static void PrintTable(BoolBash result)
+        {
+            _usedVariables.Add(" res", result);
+            foreach (var item in _usedVariables)
+            {
+                Console.Write($"{item.Key} ");
+            }
+
+            Console.WriteLine();
+            for (int i = 0; i < _countRow; i++)
+            {
+                foreach (var item in _usedVariables)
+                {
+                    Console.Write($" {item.Value._values[i]}  ");
+                }
+
+                Console.WriteLine();
+            }
         }
     }
 }
