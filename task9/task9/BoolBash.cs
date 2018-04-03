@@ -10,26 +10,107 @@ namespace task9
     public class BoolBash
     {
         private string _name;
-        private List<byte> _values; //по умолчанию - 01 //потом хранить столбец из таблицы истинности
+        private List<byte> _values = new List<byte>(); //по умолчанию - 01 //потом хранить столбец из таблицы истинности
+        private int _length;
+        private int _position;
         private static readonly byte _one = 1;
+        private static int _countRow;
+        private static int _countBool;
 
-        public BoolBash(string name)
+        public static int CountBool
         {
-            if (_usedVariables.ContainsKey(name))
+            get => _countBool;
+            set => _countBool = value;
+        }
+
+        public static int GetNumberOfArguments(string expression)
+        {
+            var separator = new char[] { ' ' };
+            
+            HashSet<string> argSet = new HashSet<string>();
+            var exp = FormatExpression(expression);
+            var lexemes = exp.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var lexeme in lexemes)
             {
-                //   this = _usedVariables[name];
+                if (!operationsDictionary.ContainsKey(lexeme)) argSet.Add(lexeme);
             }
 
-            _name = name;
-            if (name == "1") _values = new List<byte>() {1};
-            else if (name == "0") _values = new List<byte>() {0};
-            else _values = new List<byte>() {0, 1};
+            _countBool = argSet.Count;
+            return argSet.Count;
         }
+
+        public BoolBash(string name, int countBool)
+        {
+            _countBool = countBool;
+            int countRow = (int) Math.Pow(2, _countBool);
+            _countRow= (int)Math.Pow(2, _countBool);
+            _name = " " + name + " ";
+            if (!_usedVariables.ContainsKey(_name))
+            {
+                _usedVariables.Add(_name, this);
+                _position = _usedVariables.Count;
+            }
+            else
+            {
+                _position = _usedVariables[_name]._position;
+            }
+            int a = (int)Math.Pow(2, _position-1);
+            int b = (int)Math.Pow(2, _countBool) / 2 / a; 
+
+
+            if (name == "1")
+                for (int i = 0; i < _countRow; i++)
+                {
+                    _values.Add(1);
+                }
+            else if (name == "0")
+                for (int i = 0; i < _countRow; i++)
+                {
+                    _values.Add(0);
+                }
+
+            for (int i = 0; i < a; i++)
+            {
+                for (int j = 0; j < b; j++)
+                {
+                _values.Add(0);
+
+                }
+                for (int j = 0; j < b; j++)
+                {
+                    _values.Add(1);
+
+                }
+            }
+
+
+        }
+
+        //public BoolBash(string name)
+        //{
+        //    if (_usedVariables.ContainsKey(name))
+        //    {
+        //        //   this = _usedVariables[name];
+        //    }
+
+        //    _name =" " +name+" ";
+        //    if (name == "1")
+        //        _values = new List<byte>() {1};
+        //    else if (name == "0")
+        //        _values = new List<byte>() {0};
+
+        //    else _values = new List<byte>() {0, 1};
+
+        //    _length =(int) Math.Log(_values.Count, 2);
+        //    if (!_usedVariables.ContainsKey(_name))_usedVariables.Add(_name, this);
+        //}
 
         public BoolBash(string name, List<byte> values)
         {
             _name = "(" + name + ")";
             _values = values;
+            _length = (int)Math.Log(_values.Count, 2);
+
         }
         //    {"EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT"};
 
@@ -44,7 +125,9 @@ namespace task9
                 {"AND", AND},
                 {"NOR", NOR},
                 {"NAND", NAND},
-                {"NOT", NOT}
+                {"NOT", NOT},
+                {"(", null },
+                {")", null }
             };
 
         #region logical operations
@@ -100,13 +183,12 @@ namespace task9
         {
             List<byte> resultBytes = new List<byte>();
 
-                foreach (var leftBit in left?._values)
-                {
-                    foreach (var rightBit in right._values)
-                    {
-                        resultBytes.Add(operationsDictionary[operation].Invoke(leftBit, rightBit));
-                    }
-                }
+            for (var i = 0; i < left?._values.Count; i++)
+            {
+             
+                resultBytes.Add(operationsDictionary[operation].Invoke((left?._values)[i], right._values[i]));
+
+            }
 
             return new BoolBash($"{left?._name} {operation} {right._name}", resultBytes);
         }
@@ -138,6 +220,16 @@ namespace task9
         public static string ReplaceNotByXor(string expression)
         {
             return expression.Replace("NOT", "1 NOT");
+        }
+
+        public static bool operator ==(BoolBash left, BoolBash right)
+        {
+            return (left._name.Contains(right._name))|| (right._name.Contains(left._name));
+        }
+
+        public static bool operator !=(BoolBash left, BoolBash right)
+        {
+            return !(left == right);
         }
     }
 }

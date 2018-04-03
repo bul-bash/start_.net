@@ -60,7 +60,7 @@ namespace task9
                 }
                 else 
                 {
-                    stackArguments.Push(new BoolBash(lexeme));
+                    stackArguments.Push(new BoolBash(lexeme, BoolBash.CountBool));
                 }
 
             }
