@@ -10,9 +10,9 @@ namespace task3
     {
         static void Main(string[] args)
         {
-            TaskA.Start(args); 
-           // TaskB.Start(args); 
-            //TaskC.Start(args);
+            //TaskA.Start(args); 
+           TaskB.Start(args); 
+            TaskC.Start(args);
             Console.ReadKey();
 
         }

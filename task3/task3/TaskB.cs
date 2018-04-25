@@ -50,7 +50,8 @@ namespace task3
                 foreach (var symbol in symbols)
                 {
                     string tmp=symbol.Replace(",", ".");
-                    if (Double.TryParse(tmp, NumberStyles.Number, CultureInfo.InvariantCulture, out number))
+                    var parseSuccess = Double.TryParse(tmp, NumberStyles.Number, CultureInfo.InvariantCulture, out number);
+                    if (parseSuccess)
                     {
                         mul *= number;
                         count++;

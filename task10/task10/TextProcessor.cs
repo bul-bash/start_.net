@@ -18,7 +18,7 @@ namespace task10
             int count = 0;
             foreach (var letter in word.ToCharArray())
             {
-                if (vowels.Contains(letter)) count++;
+                if (vowels.Contains(char.ToLower(letter))) count++;
             }
 
             return count;

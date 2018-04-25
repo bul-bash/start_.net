@@ -15,7 +15,7 @@ namespace task6
         {
             try
             {
-                var root = GetRoot(-2, 6, x => x * x - 10 * x+20, 0.0001);
+                var root = GetRoot(4.9, 5.1, x => x * x -25 , 0.0001);
                 Console.WriteLine(root);
                
             }
@@ -23,11 +23,14 @@ namespace task6
             {
                 Console.WriteLine(exception.Message);
             }
+
+            Console.ReadKey();
         }
 
         static double GetRoot(double left, double right, Func<double,double> func, double epsilon)
         {
-            if (func(left)*func(right)>0)
+            bool isIntervalCorrect = func(left) * func(right) < 0;
+            if (!isIntervalCorrect)
             {
                 throw new Exception("Error! На концах интервала функция имеет один и тот же знак=(");
             }

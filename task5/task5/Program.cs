@@ -64,6 +64,7 @@ namespace task5
             int num = int.TryParse(Console.ReadLine(), out int n)?n:1;
             Console.WriteLine($"{num}-е слово, начинающееся с зашлавной буквы:");
             Console.WriteLine(Search(input, num));
+            Console.ReadKey();
         }
 
         static string FileInput()
@@ -142,7 +143,9 @@ namespace task5
         static string Replace(string source, string wordForReplace)
         {
             StringBuilder result = new StringBuilder();
+            
             var words = source.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length < 2) return "";
             words[words.Length - 2] = wordForReplace;
             foreach (var word in words)
             {

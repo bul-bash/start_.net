@@ -44,10 +44,11 @@ namespace task11
             {
                 try
                 {
-                using (var file = new StreamReader(fileName))
+                using (var file = new StreamReader(fileName, Encoding.Default))
                 {
                     while (!file.EndOfStream)
                     {
+                      //  Encoding.Convert(Encoding.ASCII, file.ReadLine().ToCharArray())
                         string tmp=file.ReadLine();
                         if (tmp?.IndexOf(sequence)>=0)
                         {
@@ -75,7 +76,7 @@ namespace task11
                 bool isFinded = false;
                 try
                 {
-                    using (var file = new StreamReader(fileName))
+                    using (var file = new StreamReader(fileName, Encoding.Default))
                     {
                         while ((!file.EndOfStream)&&(!isFinded))
                         {
@@ -121,7 +122,7 @@ namespace task11
             Dictionary<string, int> dictionary = new Dictionary<string, int>();
             try
             {
-                using (var file = new StreamReader(fileName))
+                using (var file = new StreamReader(fileName, Encoding.Default))
                 {
                     while (!file.EndOfStream)
                     {
