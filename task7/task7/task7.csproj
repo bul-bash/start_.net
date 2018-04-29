@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Matrix.cs" />
     <Compile Include="MatrixException.cs" />
+    <Compile Include="Polynom.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

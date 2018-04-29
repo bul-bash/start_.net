@@ -12,7 +12,7 @@ namespace task7
         private ushort _size;
         private int _position = -1;
         private double[,] _matrix;
- //       private ArrayList<double, double> = new Array();
+ 
         public Matrix(ushort size)
         {
             _size = size;
