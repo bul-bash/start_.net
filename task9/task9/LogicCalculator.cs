@@ -11,7 +11,7 @@ namespace task9
     {
 
         public static List<string> commands = new List<string>
-            {")", "EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT","("};
+            { ")", "EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT","("};
 
         static byte GetPriorytyOperation(string operation)
         {

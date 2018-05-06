@@ -9,19 +9,16 @@ namespace task9
 {
     public class BoolBash
     {
-        private string _name;
-        private List<byte> _values = new List<byte>(); //по умолчанию - 01 //потом хранить столбец из таблицы истинности
-        private int _length;
-        private int _position;
-        private static readonly byte _one = 1;
-        private static int _countRow;
-        private static int _countBool;
+        private readonly string _name;
+        private readonly List<byte> _values = new List<byte>(); //по умолчанию - 01 //потом хранить столбец из таблицы истинности
+        
+        private readonly int _position;
+        private readonly int _length;
 
-        public static int CountBool
-        {
-            get => _countBool;
-            set => _countBool = value;
-        }
+        private const byte One = 1;
+        private static int _countRow;
+
+        public static int CountBool { get; set; }
 
         public static int GetNumberOfArguments(string expression)
         {
@@ -32,19 +29,19 @@ namespace task9
             var lexemes = exp.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             foreach (var lexeme in lexemes)
             {
-                if ((!operationsDictionary.ContainsKey(lexeme))&&(lexeme!="1") &&(lexeme!="0" ))
+                if ((!OperationsDictionary.ContainsKey(lexeme))&&(lexeme!="1") &&(lexeme!="0" ))
                     argSet.Add(lexeme);
             }
 
-            _countBool = argSet.Count;
+            CountBool = argSet.Count;
             return argSet.Count;
         }
 
         public BoolBash(string name, int countBool)
         {
-            _countBool = countBool;
-            int countRow = (int) Math.Pow(2, _countBool);
-            _countRow= (int)Math.Pow(2, _countBool);
+            CountBool = countBool;
+            int countRow = (int) Math.Pow(2, CountBool);
+            _countRow= (int)Math.Pow(2, CountBool);
             _name = " " + name + " ";
             if (name == "1")
                 for (int i = 0; i < _countRow; i++)
@@ -63,6 +60,7 @@ namespace task9
                 if (!_usedVariables.ContainsKey(_name))
                 {
                     _usedVariables.Add(_name, this);
+                    _usedLetters.Add(_name);
                     _position = _usedVariables.Count;
                 }
                 else
@@ -71,7 +69,7 @@ namespace task9
                 }
 
                 int a = (int) Math.Pow(2, _position - 1);
-                int b = (int) Math.Pow(2, _countBool) / 2 / a;
+                int b = (int) Math.Pow(2, CountBool) / 2 / a;
 
 
 
@@ -103,7 +101,7 @@ namespace task9
 
         }
 
-        static Dictionary<string, Func<byte, byte, byte>> operationsDictionary =
+        private static readonly Dictionary<string, Func<byte, byte, byte>> OperationsDictionary =
             new Dictionary<string, Func<byte, byte, byte>>
             {
                 {"EQV", EQV},
@@ -123,12 +121,12 @@ namespace task9
 
         public static byte IMP(byte leftBit, byte rightBit)
         {
-            return (byte) (_one ^ leftBit ^ rightBit & leftBit);
+            return (byte) (One ^ leftBit ^ rightBit & leftBit);
         }
 
         public static byte EQV(byte leftBit, byte rightBit)
         {
-            return (byte) (_one ^ leftBit ^ rightBit);
+            return (byte) (One ^ leftBit ^ rightBit);
         }
 
         public static byte COIMP(byte leftBit, byte rightBit)
@@ -153,17 +151,17 @@ namespace task9
 
         public static byte NOR(byte leftBit, byte rightBit)
         {
-            return (byte) (_one ^ leftBit ^ rightBit ^ rightBit & leftBit);
+            return (byte) (One ^ leftBit ^ rightBit ^ rightBit & leftBit);
         }
 
         public static byte NAND(byte leftBit, byte rightBit)
         {
-            return (byte) (_one ^ rightBit & leftBit);
+            return (byte) (One ^ rightBit & leftBit);
         }
 
         public static byte NOT(byte leftBit, byte rightBit) //leftBit - not used
         {
-            return (byte) (_one ^ rightBit);
+            return (byte) (One ^ rightBit);
         }
 
         #endregion
@@ -175,7 +173,7 @@ namespace task9
             for (var i = 0; i < left?._values.Count; i++)
             {
              
-                resultBytes.Add(operationsDictionary[operation].Invoke((left?._values)[i], right._values[i]));
+                resultBytes.Add(OperationsDictionary[operation].Invoke((left._values)[i], right._values[i]));
 
             }
 
@@ -191,24 +189,31 @@ namespace task9
                 result.Append(bit);
             }
 
-            return _name + " " + result.ToString();
+            return _name + "\n" + result.ToString();
         }
 
         public static void Logged(BoolBash boolBash)
         {
             Console.WriteLine(boolBash.ToString());
+            Console.WriteLine();
         }
 
         private static Dictionary<string, BoolBash> _usedVariables = new Dictionary<string, BoolBash>();
+        private static List<string> _usedLetters = new List<string>();
 
         public static string FormatExpression(string expression)
         {
-            return " ( " + expression.Replace("(", " ( ").Replace(")", " ) ").ToUpper();
+            return " ( " + expression.Replace("(", " ( ").Replace(")", " ) ") + " ) ";
         }
 
         public static string ReplaceNotByXor(string expression)
         {
             return expression.Replace("NOT", "1 NOT");
+        }
+        public static string ToCorrect(string expression)
+        {
+            return FormatExpression(ReplaceNotByXor(expression.Replace(";", " )").ToUpper()));
+
         }
 
         public static bool operator ==(BoolBash left, BoolBash right)
@@ -239,6 +244,80 @@ namespace task9
 
                 Console.WriteLine();
             }
+            _usedVariables.Remove(" res");
+        }
+        //(A&B&C)|(A& !B&C)
+        //110 1
+        public string SKNF()
+        {
+            StringBuilder result = new StringBuilder();
+            int countVar = (int)Math.Log(_values.Count,2);
+            for(int i=0; i<_values.Count; ++i)
+            {
+                if(_values[i]==0)
+                {
+                    result.Append("(");
+                
+                    for(int k=countVar;k>0; k--)
+                    {
+                        result.Append("(");
+                        int l = (i >> (k - 1))&1;
+
+                        if (l !=0) result.Append(" NOT ");
+                        result.Append(_usedLetters[countVar-k]);
+                        result.Append(")");
+                        if(k!=1) result.Append(" OR ");
+                    }
+                    result.Append(")");
+                    result.Append(" AND ");
+                }
+            }
+            if (result.Length > 4)
+                result.Remove(result.Length - 4, 4);
+            else result.Append("cannot create SKNF");
+
+            return result.ToString();
+        }
+
+        public string SDNF()
+        {
+            StringBuilder result = new StringBuilder();
+            int countVar = (int)Math.Log(_values.Count, 2);
+            for (int i = 0; i < _values.Count; ++i)
+            {
+                if (_values[i] == 1)
+                {
+                    result.Append("(");
+
+                    for (int k = countVar; k > 0; k--)
+                    {
+                        result.Append("(");
+                        int l = (i >> (k - 1))&1;
+                        if (l !=1) result.Append(" NOT ");
+                        result.Append(_usedLetters[countVar - k]);
+                        
+                        result.Append(")");
+                        if (k != 1) result.Append(" AND ");
+                    }
+                  
+                   
+
+                    result.Append(")");
+                    result.Append(" OR ");
+                }
+            }
+            if (result.Length > 3)
+                result.Remove(result.Length - 3, 3);
+            else result.Append("cannot create SDNF");
+
+            return result.ToString();
+        }
+
+        public static void Reset()
+        {
+            _usedVariables.Clear();
+            _usedLetters.Clear();
+          //  CountBool = 0;
         }
     }
 }
