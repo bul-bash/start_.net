@@ -10,93 +10,39 @@ namespace task2
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("0,577215664901532860606512090 082 402 431 042 159 335 939 923 ");
-            Console.WriteLine( Gamma());
-        }
+            Console.WriteLine("e:");
+            Console.WriteLine($"e: {MathematicConstants.Euler}");
+            Console.WriteLine($"Первый способ: {MathematicConstants.GetE_1()}");
+            Console.WriteLine($"Второй способ: {MathematicConstants.GetE_2()}");
 
-        static decimal E()
-        {
-            decimal result = Decimal.One;
-            decimal factorial = Decimal.One;
-            for (int i = 1; i < 20; i++)
-            {
-                factorial *= i;
-                result += Decimal.One / factorial;
-            }
-            return result;
-        }
+            Console.WriteLine("pi:");
+            Console.WriteLine($"pi: {MathematicConstants.Pi}");
+            Console.WriteLine($"Первый способ: {MathematicConstants.GetPi_1()}");
+            Console.WriteLine($"Второй способ: {MathematicConstants.GetPi_2()}");
 
-        static decimal PI()
-        {
-            decimal result = 3;
-            decimal coef = 4;
-            for (long i = 2; i < 100000; i+=4)
-            {
-                    result += coef / (i * (i + 1) * (i + 2));
-                    result -= coef / ((i+2) * (i + 3) * (i + 4));
-            }
-        return result;
-        }
+            Console.WriteLine("ln(2):");
+            Console.WriteLine($"ln(2): {MathematicConstants.Ln2}");
+            Console.WriteLine($"Первый способ: {MathematicConstants.GetLn2_1()}");
+            Console.WriteLine($"Второй способ: {MathematicConstants.GetLn2_2()}");
 
-        /// <summary>
-        /// Логарифм 2 с помощью ряда Тейлора
-        /// </summary>
-        static decimal LN2_1()
-        {
-            decimal result = 0;
-            for (long i = 1; i < 1000000; i++)
-            {
-                result += (decimal) (1 / (i*Math.Pow(2,i)));
-            }
-            return result;
-        }
+            Console.WriteLine("sqrt(2):");
+            Console.WriteLine($"sqrt(2): {MathematicConstants.Sqrt2}");
+            Console.WriteLine($"Первый способ: {MathematicConstants.GetSqrt2_1()}");
+            Console.WriteLine($"Второй способ: {MathematicConstants.GetSqrt2_2()}");
 
-        /// <summary>
-        /// Нахождение корня по формуле Герона
-        /// </summary>
-        static decimal SQRT_1(int a=2)
-        {
-            decimal x = 1m / 2m * (a +1);
-            for (int i = 0; i < 5; i++)
-            {
-                x = 1m / 2m * (x + a / x);
-            }
-            return x;
-        }
+            Console.WriteLine("Gamma:");
+            Console.WriteLine($"Gamma: {MathematicConstants.Gamma}");
+            Console.WriteLine($"Первый способ: {MathematicConstants.GetGamma_1()}");
+            Console.WriteLine($"Второй способ: {MathematicConstants.GetGamma_2()}");
 
 
-        ///<summary>
-        ///  Нахождение постоянной Эйлера
-        ///  0,577 215 664 901 532 860 606 512 090 082 402 431 042 159 335 939 923 598 805 767 234 884 867 726 777 664 670 936 947 063 291 746 749 515
-        /// </summary>
-        static decimal Gamma()
-        {
-            decimal harmonic = 1m;
-            int n = 256000000;
-            for (int i = 2; i < n; i++)
-            {
-                harmonic += 1m / i;
-            }
-            
+            Console.WriteLine("Нажмите любую кнопку чтобы выйти...");
+            Console.ReadKey();
+        
+    }
 
-            return harmonic -(Decimal)Math.Log(n);
 
-        }
-
-        private static decimal Integral(decimal a, decimal b, FuncDelegate f)
-        {
-            int n = 2000000;
-            decimal h = (b - a) / n;
-            decimal sum = 0;
-            decimal x0 = a, x1 = a + h;
-            for (int i = 0; i < n; i++)
-            {
-                sum += f(x0) + 4m * f(x0 + h / 2m) + f(x1);
-                x0 += h;
-                x1 += h;
-            }
-            return (h / 6m) * sum;
-        }
+ 
 
     }
 }

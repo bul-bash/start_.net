@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D4CCABF8-6ABF-4033-9836-0C191F38600F}</ProjectGuid>
+    <ProjectGuid>{EB0EFC55-0664-49A3-BC8B-C134AB98532C}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>task2</RootNamespace>
-    <AssemblyName>task2</AssemblyName>
+    <RootNamespace>task8</RootNamespace>
+    <AssemblyName>task8</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,9 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MathematicConstants.cs" />
+    <Compile Include="ArefmeticOperations.cs" />
+    <Compile Include="Complex.cs" />
+    <Compile Include="IArithmeticOperations.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Vector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

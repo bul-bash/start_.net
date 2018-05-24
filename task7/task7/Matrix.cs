@@ -1,337 +1,333 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace task7
 {
-    public sealed class Matrix : ICloneable, IEnumerable, IEnumerator
+    public class Matrix : ICloneable, IEnumerable, IArithmeticOperations<Matrix>, IEquatable<Matrix>
     {
-        private ushort _size;
-        private int _position = -1;
-        private double[,] _matrix;
- 
-        public Matrix(ushort size)
+        private double[,] _coefficients;
+        public double[,] Coefficients
+        {
+            get => _coefficients;
+            set => _coefficients = (double[,])value.Clone();
+        }
+
+        private int _size = 0;
+        public int Size => _size;
+
+        public Matrix(params double[] coefficients)
+        {
+            var sqrt = Math.Sqrt(coefficients.Length);
+            _size = sqrt - (int)sqrt > 0 ? (int)sqrt + 1 : (int)sqrt;
+            _coefficients = new double[_size, _size];
+
+            int x = 0, y = 0;
+            foreach (var value in coefficients)
+            {
+                if (y == _size)
+                {
+                    x++;
+                    y = 0;
+                }
+                _coefficients[x, y++] = value;
+            }
+        }
+
+        public Matrix(int size = 0)
         {
             _size = size;
-            _matrix = new double[_size,_size];
-        
+            _coefficients = new double[size, size];
         }
-        public Matrix(ushort size, double value)
+
+        public Matrix()
         {
-            _size = size;
-            _matrix = new double[_size, _size];
-            for (int i = 0; i < _size; i++)
-            {
-                for (int j = 0; j < _size; j++)
+            _size = 0;
+            _coefficients = new double[_size, _size];
+        }
+
+
+        public object Clone()
+        {
+            var matrix = new Matrix(_size) { Coefficients = (double[,])Coefficients.Clone() };
+            return matrix;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _coefficients.GetEnumerator();
+        }
+
+        public static Matrix Add(Matrix matrix1, Matrix matrix2)
+        {
+            if (matrix1._size != matrix2._size)
+                throw new MatrixException("Матрицы разного размера");
+
+            var resMatrix = new Matrix(matrix1._size);
+
+            for (var x = 0; x < matrix1._size; x++)
+                for (var y = 0; y < matrix1._size; y++)
+                    resMatrix.Coefficients[x, y] = matrix1.Coefficients[x, y] + matrix2.Coefficients[x, y];
+
+            return resMatrix;
+        }
+
+        Matrix IArithmeticOperations<Matrix>.Add(Matrix a, Matrix b)
+        {
+            return Add(a, b);
+        }
+
+        Matrix IArithmeticOperations<Matrix>.Multiplication(Matrix a, Matrix b)
+        {
+            return Multiplication(a, b);
+        }
+
+        Matrix IArithmeticOperations<Matrix>.Subtraction(Matrix a, Matrix b)
+        {
+            return Subtraction(a, b);
+        }
+
+        Matrix IArithmeticOperations<Matrix>.Division(Matrix a, Matrix b)
+        {
+            return Division(a, b);
+        }
+
+        public static Matrix Subtraction(Matrix matrix1, Matrix matrix2)
+        {
+            return Add(matrix1, -matrix2);
+        }
+
+        public static Matrix Multiplication(Matrix matrix1, Matrix matrix2)
+        {
+            if (matrix1._size != matrix2._size)
+                throw new MatrixException("Матрицы разного размера");
+
+            var resMatrix = new Matrix(matrix1._size);
+
+            for (var x = 0; x < matrix1._size; x++)
+                for (var y = 0; y < matrix1._size; y++)
+                    for (var t = 0; t < matrix1._size; t++)
+                        resMatrix.Coefficients[x, y] += matrix1.Coefficients[x, t] * matrix2.Coefficients[t, y];
+
+            return resMatrix;
+        }
+
+        public static Matrix MultiplicationOnNumber(Matrix matrix, double k)
+        {
+            var resMatrix = (Matrix)matrix.Clone();
+
+            for (var x = 0; x < matrix._size; x++)
+                for (var y = 0; y < matrix._size; y++)
+                    resMatrix.Coefficients[x, y] *= k;
+
+            return resMatrix;
+        }
+
+        public static Matrix UnaryMinus(Matrix matrix)
+        {
+            var resMatrix = new Matrix(matrix._size);
+
+            for (var x = 0; x < matrix._size; x++)
+                for (var y = 0; y < matrix._size; y++)
+                    resMatrix.Coefficients[x, y] = -matrix.Coefficients[x, y];
+
+            return resMatrix;
+        }
+
+        public static Matrix Division(Matrix matrix1, Matrix matrix2)
+        {
+            var resMatrix = Multiplication(matrix1, matrix2.Reverse());
+
+            return resMatrix;
+        }
+
+        public Matrix Transpose()
+        {
+            var resMatrix = new Matrix(_size);
+
+            for (var x = 0; x < _size; x++)
+                for (var y = 0; y < _size; y++)
+                    resMatrix.Coefficients[x, y] = Coefficients[y, x];
+
+            return resMatrix;
+        }
+
+        public double Determinant()
+        {
+            double det = 1;
+            var copy = (double[,])Coefficients.Clone();
+
+            for (var j = 0; j < _size - 1; j++)
+                for (var i = j + 1; i < _size; i++)
                 {
-                    _matrix[i, j] = value;
+                    if (copy[i, j].Equals(0)) continue;
+
+                    if (copy[j, j].Equals(0))
+                        for (var l = 0; l < _size; l++)
+                            copy[j, l] = copy[j, l] + copy[i, l];
+
+                    var tmp = -(copy[i, j] / copy[j, j]);
+
+                    for (var l = 0; l < _size; l++)
+                        copy[i, l] = copy[i, l] + (tmp * copy[j, l]);
                 }
-            }
 
-        }
-        public Matrix(Matrix source)
-        {
-            _size = source._size;
-            _matrix = new double[_size, _size];
-            for (var j = 0; j < _size; j++)
-            {
-                for (var i = 0; i < _size; i++)
-                {
-                    _matrix[j, i] = source._matrix[j, i];
-                }
-            }
-        }
-        public Matrix(ushort size, bool e)
-        {
-            _size = size;
-            _matrix = new double[_size, _size];
-            for (int i = 0; i < _size; i++)
-            {
-                _matrix[i, i] = 1;
-            }
+            for (var i = 0; i < _size; i++)
+                det *= copy[i, i];
 
+            return det;
         }
 
-        public void Init()
+        public Matrix GetMinor(int a, int b)
         {
-            Random random = new Random();
-            for (var j = 0; j < _size; j++)
-            {
-                
-                for (var i = 0; i < _size; i++)
-                {
-                    
-                    _matrix[j,i] = random.Next()%10;
-                }
-            }
-        }
+            var resMatrix = new Matrix(_size - 1);
+            int x = 0, y = 0;
 
-        public override string ToString()
-        {
-           
-                StringBuilder str = new StringBuilder();
+            for (var i = 0; i < _size; i++)
                 for (var j = 0; j < _size; j++)
                 {
+                    if (i == a || j == b) continue;
 
-                    for (var i = 0; i < _size; i++)
-                    {
+                    resMatrix.Coefficients[x, y++] = Coefficients[i, j];
 
-                        str.Append(Math.Round(_matrix[j,i], 10) + " ");
-                    }
-                    str.Append("\n");
-                
-            }
+                    if (y != resMatrix._size) continue;
 
-            return str.ToString();
-        }
-
-
-        public static Matrix operator +(Matrix left, Matrix right)
-        {
-            //TODO make test for eqal size matrix
-            if(left._size!=right._size) throw new MatrixException("Matrix's sizes must be eqals!");
-            Matrix tmp = left;
-            for (var j = 0; j < left._size; j++)
-            {
-                for (var i = 0; i < left._size; i++)
-                {
-                    tmp._matrix[j, i] += right._matrix[j, i];
+                    y = 0;
+                    x++;
                 }
-            }
-            return tmp;
-        }
-        public static Matrix operator -(Matrix left, Matrix right)
-        {
-            if (left._size != right._size) throw new MatrixException("Matrix's sizes must be eqals!");
 
-            Matrix tmp = left;
-            for (var j = 0; j < left._size; j++)
-            {
-                for (var i = 0; i < left._size; i++)
-                {
-                    tmp._matrix[j, i] -= right._matrix[j, i];
-                }
-            }
-            return tmp;
-        }
-        public static Matrix operator *(Matrix left, Matrix right)
-        {
-            if (left._size != right._size) throw new MatrixException("Matrix's sizes must be eqals!");
-
-            Matrix tmp = new Matrix(left._size);
-            for (var j = 0; j < left._size; j++) // строка 1
-            {
-                for (var i = 0; i < left._size; i++) //столбец 2
-                {
-                    for (var k = 0; k < left._size; k++) //строка 2 столбец 1
-                    {
-                        tmp._matrix[j, i] += left._matrix[j, k] * right._matrix[k,i];
-                    }
-                }
-            }
-            return tmp;
-        }
-        public static Matrix operator /(Matrix left, Matrix right)
-        {
-            //TODO make test for eqal size matrix
-            if (left._size != right._size) throw new MatrixException("Matrix's sizes must be eqals!");
-
-            return left * right.Reverse();
-        }
-
-        public static Matrix operator +(Matrix left, double right)
-        {
-            Matrix tmp = new Matrix(left);
-            for (int i = 0; i < left._size; i++)
-            {
-                for (int j = 0; j < left._size; j++)
-                {
-                    tmp._matrix[i,j] += right;
-                }
-            }
-
-            return tmp;
-        }
-        public static Matrix operator -(Matrix left, double right)
-        {
-            Matrix tmp = new Matrix(left);
-            for (int i = 0; i < left._size; i++)
-            {
-                for (int j = 0; j < left._size; j++)
-                {
-                    tmp._matrix[i, j] -= right;
-                }
-            }
-
-            return tmp;
-        }
-        public static Matrix operator *(Matrix left, double right)
-        {
-            Matrix tmp = new Matrix(left);
-            for (int i = 0; i < left._size; i++)
-            {
-                for (int j = 0; j < left._size; j++)
-                {
-                    tmp._matrix[i, j] *= right;
-                }
-            }
-
-            return tmp;
-        }
-        public static Matrix operator /(Matrix left, double right)
-        {
-            Matrix tmp = new Matrix(left);
-            for (int i = 0; i < left._size; i++)
-            {
-                for (int j = 0; j < left._size; j++)
-                {
-                    tmp._matrix[i, j] /= right;
-                }
-            }
-
-            return tmp;
-        }
-
-        public static Matrix operator +(double left, Matrix right)
-        {
-            Matrix tmp = new Matrix(right);
-            for (int i = 0; i < right._size; i++)
-            {
-                for (int j = 0; j < right._size; j++)
-                {
-                    tmp._matrix[i, j] += left;
-                }
-            }
-
-            return tmp;
-        }
-        public static Matrix operator *(double left, Matrix right)
-        {
-            Matrix tmp = new Matrix(right);
-            for (int i = 0; i < right._size; i++)
-            {
-                for (int j = 0; j < right._size; j++)
-                {
-                    tmp._matrix[i, j] *= left;
-                }
-            }
-
-            return tmp;
-        }
-
-
-        public Matrix Transponse()
-        {
-            Matrix tmp = new Matrix(this._size);
-            for (var j = 0; j <_size; j++)
-            {
-                for (var i = 0; i < _size; i++)
-                {
-                    tmp._matrix[j, i] = _matrix[i, j];
-                }
-            }
-
-            return tmp;
+            return resMatrix;
         }
 
         public Matrix Reverse()
         {
-            Matrix tmp=new Matrix(_size);
-            if (Determinant()==0) throw new MatrixException("Determinant should not equal zero!");
+            var resMatrix = (Matrix)Clone();
 
-            for (int i = 0; i < _size; i++)
-            {
-                for (int j = 0; j < _size; j++)
+            var det = Determinant();
+
+            if (det.Equals(0))
+                throw new MatrixException("No reverce matirx");
+
+            for (var i = 0; i < resMatrix._size; i++)
+                for (var j = 0; j < resMatrix._size; j++)
                 {
-                    tmp._matrix[i, j] = GetAdjugateMatrix()._matrix[j,i]/Determinant();
-                   
-                }
-            }
-            return tmp;
-        }
-
-        private Matrix GetAdjugateMatrix()
-        {
-            Matrix tmp = new Matrix(_size);
-            int sign = 1;
-            for (int i = 0; i < _size; i++)
-            {
-                for (int j = 0; j < _size; j++)
-                {
-                    tmp._matrix[i, j] = Minor((ushort)i, (ushort)j).Determinant()*sign;
-                    sign = -sign;
-                }
-            }
-
-            return tmp;
-        }
-
-        public object Clone()
-        {
-            return new Matrix(this);
-        }
-        /// <summary>
-        /// Вычеркнуть из _matrix col столбец row строку
-        /// </summary>
-        public Matrix Minor(ushort row, ushort col)
-        {
-            Matrix result = new Matrix((ushort)(_size-1));
-            ushort _i = 0;
-            ushort _j = 0;
-            for (int i = 0; i < _size; i++)
-            {
-                _j = 0;
-                if (i == row) continue;
-                for (int j = 0; j < _size; j++)
-                {
-                    if (j == col) continue;
-                    result._matrix[_i, _j++] = _matrix[i, j];
-
+                    var tmp = GetMinor(i, j);
+                    resMatrix.Coefficients[i, j] = tmp.Determinant() * Math.Pow(-1, (i + j + 2));
                 }
 
-                _i++;
+            resMatrix = resMatrix.Transpose();
+            resMatrix *= (dynamic)1 / det;
+
+            return resMatrix;
+        }
+
+        public static Matrix operator +(Matrix matrix1, Matrix matrix2)
+        {
+            return Add(matrix1, matrix2);
+        }
+
+        public static Matrix operator -(Matrix matrix1, Matrix matrix2)
+        {
+            return Subtraction(matrix1, matrix2);
+        }
+
+        public static Matrix operator -(Matrix matrix)
+        {
+            return UnaryMinus(matrix);
+        }
+
+        public static Matrix operator *(Matrix matrix1, Matrix matrix2)
+        {
+            return Multiplication(matrix1, matrix2);
+        }
+
+        public static Matrix operator *(Matrix matrix, double k)
+        {
+            return MultiplicationOnNumber(matrix, k);
+        }
+
+        public static Matrix operator /(Matrix matrix1, Matrix matrix2)
+        {
+            return Division(matrix1, matrix2);
+        }
+
+        public static bool operator >(Matrix matrix, double num)
+        {
+            return true;
+        }
+
+        public static bool operator <(Matrix matrix, double num)
+        {
+            return false;
+        }
+
+        public static bool operator ==(Matrix left, Matrix right)
+        {
+            var result = true;
+
+            if ((object)right == null || (object)left == null)
+                throw new Exception("Один из полиномов не инициализирован");
+
+            if (left.Size != right.Size)
+                result = false;
+            else
+            {
+                for (var i = 0; i < left.Size; i++)
+                    for (var j = 0; j < left.Size; j++)
+                    {
+                        if (left.Coefficients[i, j] != right.Coefficients[i, j])
+                        {
+                            result = false;
+                            break;
+                        }
+
+                        if (result == false) break;
+                    }
             }
 
             return result;
         }
 
-        public double Determinant()
+        public static bool operator !=(Matrix left, Matrix right)
         {
-            int k = 1;
-            double res = 0;
-            if (_matrix.Length == 1)
-                return _matrix[0, 0];
-            if (_matrix.Length == 4)
-                return _matrix[0, 0] * _matrix[1, 1] - _matrix[1, 0] * _matrix[0, 1];
+            return !(left == right);
+        }
 
-            for (int i = 0; i < _size; i++)
+        public bool Equals(Matrix other)
+        {
+            var result = other.Size == Size;
+
+            if (result)
+                for (var i = 0; i < other.Size; i++)
+                {
+                    if (!result) break;
+                    for (var j = 0; j < other.Size; j++)
+                    {
+                        if (_coefficients[i, j] != other._coefficients[i, j])
+                            result = false;
+                        break;
+                    }
+                }
+
+            return result;
+        }
+
+        public override string ToString()
+        {
+            var strMatrix = new StringBuilder();
+
+            for (var i = 0; i < _size; i++)
             {
-                res += k * _matrix[0, i] * Minor(0, (ushort)i).Determinant();
-                k = -k;
+                for (var j = 0; j < _size; j++)
+                {
+                    strMatrix.Append("[");
+                    strMatrix.Append(Coefficients[i, j]);
+                    strMatrix.Append("]");
+                }
+                if (i < _size - 1) strMatrix.Append("|");
             }
-            return res;
-        }
 
-        public bool MoveNext()
-        {
-            _position++;
-            return (_position < _matrix.Length);
-        }
-        public void Reset()
-        {
-            _position = 0;
-        }
-        public object Current
-        {
-            get { return _matrix[_position / _size, _position % _size]; }
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-           return _matrix.GetEnumerator();
+            return strMatrix.ToString();
         }
     }
 }

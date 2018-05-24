@@ -12,82 +12,78 @@ namespace task3
     {
 
 
-        private static void CountAverage(string inputString)
+        static char CalculateAverageMean(string data)
         {
-            if (inputString != null)
+            var list = new List<int>();
+            var splited = data.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var symbol in splited)
             {
-                double sum = 0;
-                double number;
-                int count = 0;
-                var symbols = inputString.Split();
-                foreach (var symbol in symbols)
+                if (symbol.Length == 1)
                 {
-
-                    if (Double.TryParse(symbol, out number))
-                    {
-                        sum += number;
-                        count++;
-                    }
-                }
-
-                if (count > 0)
-                {
-                    Console.WriteLine($"Среднее Арифметическое введенных чисел: {sum / count}");
+                    list.Add(symbol.First());
                 }
                 else
                 {
-                    Console.WriteLine($"ВЫ не ввели ни одного адекватного числа!=(");
+                    Console.WriteLine($"Symbol.length != 1 : {symbol}");
                 }
             }
-        }
 
-        private static void FileInput(string fileName)
-        {
-            using (var streamReader = new StreamReader(fileName))
+            var result = 0.0;
+
+            if (list.Count > 0)
             {
-                string inputString = streamReader.ReadToEnd();
-                Console.WriteLine("Считана последовательность символов, разделенных пробелами:");
-                Console.WriteLine(inputString);
-                CountAverage(inputString);
-
+                result = list.Sum() / (double)list.Count;
             }
 
+            return (char)result;
         }
-        private static void ConsoleInput()
-        {
-            Console.WriteLine("Введите последовательность символов, разделенных пробелами.");
-            string inputString = Console.ReadLine();
-            CountAverage(inputString);
 
+        static void ProcessFilesInput(string fileName)
+        {
+            try
+            {
+                var dataFromFile = File.ReadAllText(fileName);
+                var result = CalculateAverageMean(dataFromFile);
+                Console.WriteLine($"Среднеарифметическое с файла {fileName} = {result}");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+        }
+
+        static void ProcessConsoleInput()
+        {
+            Console.WriteLine("Введите строку с числами разделенными пробелами");
+            var inputData = Console.ReadLine();
+            var result = CalculateAverageMean(inputData);
+
+            Console.WriteLine($"Среднеарифметическое = {result}");
         }
 
         public static void Start(string[] args)
         {
+            var nextArgumentIsFileName = false;
+
+            foreach (var argument in args)
+            {
+                if (nextArgumentIsFileName)
+                {
+                    ProcessFilesInput(argument);
+                    nextArgumentIsFileName = false;
+                }
+
+                switch (argument)
+                {
+                    case "-c": ProcessConsoleInput(); break;
+                    case "-f": nextArgumentIsFileName = true; break;
+                }
+            }
+
             if (args.Length == 0)
             {
-                ConsoleInput();
-                return;
-            }
-            else if (args[0] == "-c")
-            {
-                ConsoleInput();
-                return;
-            }
-            else if ((args[0] == "-f") && (args.Length > 1))
-            {
-                try
-                {
-                    FileInput(args[1]);
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine($"Ошибка открытия файла '{args[1]}' \nПроверьте путь и имя файла");
-                    return;
-                }
-            }
-            else
-            {
-                    Console.WriteLine($"Не удалось распознать аргументы коммандной строки! \nПроверьте корректность ввода!");
+                ProcessConsoleInput();
             }
         }
 

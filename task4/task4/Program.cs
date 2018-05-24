@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,8 +25,86 @@ namespace task4
 {
     class Program
     {
+        static void ProcessNumbers(string numberStr, string newSystemStr)
+        {
+            try
+            {
+                var newSystem = int.Parse(newSystemStr);
+                var result = NumberSystem.ChangeNumberSystem(numberStr, newSystem);
+
+                Console.WriteLine($"Number {numberStr} in system {newSystem} = {result}");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+        }
+
+        static void ProcessFilesInput(string fileName)
+        {
+            try
+            {
+                var dataFromFile = File.ReadAllText(fileName);
+                var numberSplit = dataFromFile.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                var first = "";
+                var isFirst = true;
+                foreach (var number in numberSplit)
+                {
+                    if (isFirst)
+                    {
+                        first = number;
+                    }
+                    else
+                    {
+                        ProcessNumbers(first, number);
+                    }
+
+                    isFirst = !isFirst;
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+        }
+
+        static void ProcessConsoleInput()
+        {
+            Console.Write("Enter number : ");
+            var numberLine = Console.ReadLine();
+
+            Console.Write("Enter new system : ");
+            var newSystemLine = Console.ReadLine();
+
+            ProcessNumbers(numberLine, newSystemLine);
+        }
+
         static void Main(string[] args)
         {
+            var nextArgumentIsFileName = false;
+
+            foreach (var argument in args)
+            {
+                if (nextArgumentIsFileName)
+                {
+                    ProcessFilesInput(argument);
+                    nextArgumentIsFileName = false;
+                }
+
+                switch (argument)
+                {
+                    case "-c": ProcessConsoleInput(); break;
+                    case "-f": nextArgumentIsFileName = true; break;
+                }
+            }
+
+            if (args.Length == 0)
+            {
+                ProcessConsoleInput();
+            }
+
+            Console.ReadKey();
         }
     }
 }

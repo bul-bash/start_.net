@@ -15,7 +15,7 @@ namespace task6
         {
             try
             {
-                var root = GetRoot(4.9, 5.1, x => x * x -25 , 0.0001);
+                var root = GetRoot(0, 1, x => x * x -25 , 0.0001);
                 Console.WriteLine(root);
                
             }
