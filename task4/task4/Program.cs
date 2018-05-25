@@ -104,6 +104,8 @@ namespace task4
                 ProcessConsoleInput();
             }
 
+
+
             Console.ReadKey();
         }
     }

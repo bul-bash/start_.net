@@ -47,7 +47,7 @@ namespace task8
         private static void RunComplex()
         {
             var number1 = new Complex(4, 4);
-            var number2 = new Complex(0, 0);
+            var number2 = new Complex(0, 1);
 
             Console.WriteLine($"Первое число: {number1}\nВторое число: {number2}");
 

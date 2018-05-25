@@ -13,7 +13,7 @@ namespace task7
         private SortedDictionary<int, T> _polynom = new SortedDictionary<int, T>();
         private static ArefmeticOperations<T> _operations;
 
-        private const string Pattern = @"([-+]?\d+\.\d+|[-+]?\d*)((?:x(?:\^-?\d+)?)?)";
+        //private const string Pattern = @"([-+]?\d+\.\d+|[-+]?\d*)((?:x(?:\^-?\d+)?)?)";
 
         static Polynom()
         {

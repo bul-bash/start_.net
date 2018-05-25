@@ -13,6 +13,17 @@ namespace task8
         public static readonly Complex One = new Complex(1.0, 0.0);
         public static readonly Complex ImaginaryOne = new Complex(0.0, 1.0);
 
+
+        #region какое-то гавно
+        delegate void mydel(MyEventArgs arg);
+        private event mydel _evnt;
+        public static void ThrowException(MyEventArgs args)
+        {
+            throw new Exception("Деление на ноль(");
+        }
+
+        #endregion
+
         public Complex() { }
 
         public Complex(double realPar, double imaginaryPart = 0)
@@ -86,7 +97,14 @@ namespace task8
         public static Complex Division(Complex left, Complex right)
         {
             if (right._realPart == 0 && right._imaginaryPart == 0)
-                throw new Exception("Деление на 0");
+            {
+                // throw new Exception("Деление на 0");
+
+                #region исключение через событие
+                right._evnt += ThrowException;
+                right._evnt(new MyEventArgs());
+                #endregion
+            }
             var tmp = right._imaginaryPart * right._imaginaryPart + right._realPart * right._realPart;
             var resNumber = new Complex((left._realPart * right._realPart + left._imaginaryPart * right._imaginaryPart) / tmp,
                 (right._realPart * left._imaginaryPart - left._realPart * right._imaginaryPart) / tmp);
@@ -195,5 +213,10 @@ namespace task8
         {
             return new Complex(_realPart, _imaginaryPart);
         }
+    }
+
+    public class MyEventArgs : EventArgs
+    {
+
     }
 }
