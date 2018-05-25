@@ -13,17 +13,9 @@ namespace task9
         static void Main(string[] args)
         {
 
-            //BoolBash A = new BoolBash("A");
-            //BoolBash B = new BoolBash("B");
-            //BoolBash C = BoolBash.Operation(A, B, "XOR");
-            //Console.WriteLine(C);
 
-            //A = BoolBash.Operation(C,B,"EQV");
-            //Console.WriteLine(A);
-            
-            Console.WriteLine(LogicCalculator.ParseExpression("A AND A)", LogicCalculator.commands,BoolBash.Logged));
+            Start(@"A:\1.txt");
         }
-
         static void Start(string path)
         {
             using (var stream = new StreamReader(path))
@@ -31,11 +23,32 @@ namespace task9
                 while (!stream.EndOfStream)
                 {
                     var input = stream.ReadLine();
+                    BoolBash.Reset();
+
+                    var expr = BoolBash.ToCorrect(input);
+                    Console.WriteLine(input);
+                    BoolBash.GetNumberOfArguments(expr);
+
+                    var result = LogicCalculator.ParseExpression(expr, LogicCalculator.commands, null);
+                    Console.WriteLine();
+                    BoolBash.PrintTable(result);
+                    Console.WriteLine();
+                    var sknf = BoolBash.ToCorrect(result.SKNF());
+                    var sdnf = BoolBash.ToCorrect(result.SDNF());
+                    Console.WriteLine($"SKNF:\n{BoolBash.DelSpaces(sknf)}");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine($"SDNF:\n{BoolBash.DelSpaces(sdnf)}");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine();
 
                 }
             }
 
-            
+
         }
     }
 }

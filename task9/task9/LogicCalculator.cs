@@ -11,11 +11,11 @@ namespace task9
     {
 
         public static List<string> commands = new List<string>
-            {")", "EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT","("};
+            { ")", "EQV", "IMP", "COIMP", "XOR", "OR", "AND", "NOR", "NAND", "NOT","("};
 
         static byte GetPriorytyOperation(string operation)
         {
-            return (byte) commands.IndexOf(operation);
+            return (byte)commands.IndexOf(operation);
         }
 
         static Stack<string> stackOperations;
@@ -24,27 +24,27 @@ namespace task9
         //A AND (B OR C)
         //A * (B + C) 
         //(A XOR B AND C)
-        public static BoolBash ParseExpression(string expression, List<string> commands, Action<BoolBash> logged=null)
+        public static BoolBash ParseExpression(string expression, List<string> commands, Action<BoolBash> logged = null)
         {
             var separator = new char[] { ' ' };
 
             var stackOperations = new Stack<string>();
-            stackOperations.Push("(");
+
             var stackArguments = new Stack<BoolBash>();
-            string expressionEx = expression.Replace("(", " ( ").Replace(")", " ) ");
+
             BoolBash argument1;
             BoolBash argument2;
-            var lexemes = expressionEx.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+            var lexemes = expression.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             foreach (var lexeme in lexemes)
             {
                 if (commands.Contains(lexeme))
                 {
-                    if (stackOperations.Count!=0)
+                    if (stackOperations.Count != 0)
                     {
                         while (GetPriorytyOperation(lexeme) < GetPriorytyOperation(stackOperations.Peek()) && stackOperations.Peek() != "(")
                         {
                             argument2 = stackArguments?.Pop() ?? null;
-                            argument1 = stackArguments.Count!=0 ? stackArguments?.Pop() : null;
+                            argument1 = stackArguments.Count != 0 ? stackArguments?.Pop() : null;
                             BoolBash tmp = BoolBash.Operation(argument1, argument2,
                                 stackOperations.Pop());
                             stackArguments.Push(tmp);
@@ -56,11 +56,11 @@ namespace task9
                         else stackOperations.Push(lexeme);
                     }
                     else
-                    stackOperations.Push(lexeme);
+                        stackOperations.Push(lexeme);
                 }
-                else 
+                else
                 {
-                    stackArguments.Push(new BoolBash(lexeme));
+                    stackArguments.Push(new BoolBash(lexeme, BoolBash.CountBool));
                 }
 
             }
@@ -80,9 +80,9 @@ namespace task9
             StringBuilder result = new StringBuilder();
             foreach (var element in func)
             {
-                if (element==0)
+                if (element == 0)
                 {
-                    
+
                 }
             }
 
